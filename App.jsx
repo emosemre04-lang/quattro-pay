@@ -1,4 +1,17 @@
 import { useState, useEffect, useRef } from “react”;
+import “./App.css”;
+
+// zoom lock — runs once at load
+(function() {
+const vp = document.querySelector(‘meta[name=“viewport”]’);
+if (vp) vp.content = “width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no”;
+else {
+const m = document.createElement(“meta”);
+m.name = “viewport”;
+m.content = “width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no”;
+document.head.appendChild(m);
+}
+})();
 
 const GREEN = “#4A7C59”;
 const GL = “#E8F0EB”;
@@ -10,25 +23,6 @@ const TM = “#555555”;
 const TL = “#999999”;
 const BO = “#E5E2DC”;
 const FF = “‘DM Sans’, sans-serif”;
-
-// zoom lock
-(function() {
-const vp = document.querySelector(‘meta[name=“viewport”]’);
-if (vp) vp.content = “width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no”;
-else {
-const m = document.createElement(“meta”);
-m.name = “viewport”;
-m.content = “width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no”;
-document.head.appendChild(m);
-}
-const fl = document.createElement(“link”);
-fl.href = “https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap”;
-fl.rel = “stylesheet”;
-document.head.appendChild(fl);
-const gs = document.createElement(“style”);
-gs.textContent = `html,body{scroll-behavior:smooth;touch-action:pan-x pan-y} *{-webkit-tap-highlight-color:transparent;box-sizing:border-box} @keyframes pulseLock{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}} @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}} @keyframes fadeR{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}} @keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(220px) rotate(720deg) scale(0.4)}} @keyframes countPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}} @keyframes floatBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}} @keyframes auraBurst{0%{opacity:.7;transform:scale(.85)}40%{opacity:.35;transform:scale(1.06)}100%{opacity:0;transform:scale(1.22)}} @keyframes scanline{0%{top:0%;opacity:.6}80%{opacity:.6}100%{top:100%;opacity:0}} @keyframes rippleOut{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(2.8)}} @keyframes gc1{0%,100%{clip-path:inset(0 0 95% 0);transform:translate(-2px,0)}50%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0)}} @keyframes gc2{0%,100%{clip-path:inset(60% 0 20% 0);transform:translate(2px,0)}50%{clip-path:inset(80% 0 5% 0);transform:translate(-2px,0)}} @keyframes d0{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-22px)}} @keyframes d1{0%,100%{transform:translate(0,0)}50%{transform:translate(-18px,16px)}} @keyframes d2{0%,100%{transform:translate(0,0)}50%{transform:translate(22px,10px)}} @keyframes d3{0%,100%{transform:translate(0,0)}50%{transform:translate(-10px,-18px)}} @keyframes d4{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,20px)}} @keyframes d5{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,8px)}} @keyframes cardPulse{0%{box-shadow:0 0 0 0 rgba(74,124,89,.45)}50%{box-shadow:0 0 0 10px rgba(74,124,89,.1)}100%{box-shadow:0 0 0 0 rgba(74,124,89,0)}} @keyframes bannerIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}} .bp:active{transform:scale(.95)!important;transition:transform .1s!important}`;
-document.head.appendChild(gs);
-})();
 
 function bizDate(n) {
 const r = new Date(); let a = 0;
@@ -271,7 +265,7 @@ function StepIndicator({ active }) {
 if (active === 0) return <div style={{ width: “4px”, height: “4px”, borderRadius: “50%”, background: GREEN }} />;
 return (
 <div style={{ display: “flex”, alignItems: “center”, gap: “4px” }}>
-{[1, 2, 3, 4, 5, 6].map(i => (
+{[1,2,3,4,5,6].map(i => (
 <div key={i} style={{ width: i === active ? “18px” : “5px”, height: “5px”, borderRadius: “3px”, background: i <= active ? GREEN : BO, transition: “all .35s cubic-bezier(.34,1.56,.64,1)”, boxShadow: i === active ? “0 0 6px rgba(74,124,89,.5)” : “none” }} />
 ))}
 <span style={{ fontSize: “10px”, color: GREEN, fontWeight: 700, marginLeft: “4px”, fontFamily: FF }}>{active}/6</span>
@@ -308,9 +302,12 @@ return <div key={i} style={{ position: “absolute”, left: “50%”, transfor
 
 function Particles() {
 const pts = [
-{ x: 8, y: 20, s: 3, o: .12, a: “d0”, d: “9s” }, { x: 88, y: 35, s: 2, o: .09, a: “d1”, d: “12s” },
-{ x: 50, y: 60, s: 4, o: .07, a: “d2”, d: “15s” }, { x: 15, y: 75, s: 2.5, o: .10, a: “d3”, d: “11s” },
-{ x: 78, y: 15, s: 3, o: .08, a: “d4”, d: “13s” }, { x: 92, y: 80, s: 2, o: .11, a: “d5”, d: “10s” },
+{ x: 8, y: 20, s: 3, o: .12, a: “drift0”, d: “9s” },
+{ x: 88, y: 35, s: 2, o: .09, a: “drift1”, d: “12s” },
+{ x: 50, y: 60, s: 4, o: .07, a: “drift2”, d: “15s” },
+{ x: 15, y: 75, s: 2.5, o: .10, a: “drift3”, d: “11s” },
+{ x: 78, y: 15, s: 3, o: .08, a: “drift4”, d: “13s” },
+{ x: 92, y: 80, s: 2, o: .11, a: “drift5”, d: “10s” },
 ];
 return (
 <div style={{ position: “fixed”, inset: 0, pointerEvents: “none”, zIndex: 0, overflow: “hidden” }}>
@@ -399,8 +396,8 @@ return (
 function WaIcon() {
 return (
 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
-<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-<path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.523 5.854L0 24l6.324-1.501A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.65-.493-5.177-1.355l-.371-.22-3.754.891.924-3.638-.242-.381A9.946 9.946 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+<path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.523 5.854L0 24l6.324-1.501A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.65-.493-5.177-1.355l-.371-.22-3.754.891.924-3.638-.242-.381A9.946 9.946 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
 </svg>
 );
 }
@@ -408,8 +405,8 @@ return (
 function WaIconLg() {
 return (
 <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff">
-<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-<path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.523 5.854L0 24l6.324-1.501A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.65-.493-5.177-1.355l-.371-.22-3.754.891.924-3.638-.242-.381A9.946 9.946 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+<path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.523 5.854L0 24l6.324-1.501A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.886 0-3.65-.493-5.177-1.355l-.371-.22-3.754.891.924-3.638-.242-.381A9.946 9.946 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
 </svg>
 );
 }
@@ -446,169 +443,135 @@ return (
 <div style={{ minHeight: “100vh”, background: bg, fontFamily: FF, opacity: show ? 1 : 0, transition: “opacity .5s ease,background .3s ease”, position: “relative” }}>
 <Particles />
 <Confetti show={confetti} />
-
-```
-  <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "3px", zIndex: 100 }}>
-    <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg,${GREEN},#7EC8A0)`, transition: "width .1s linear", borderRadius: "0 2px 2px 0" }} />
-  </div>
-
-  <div style={{ position: "sticky", top: "3px", zIndex: 90, backdropFilter: "blur(20px)", background: "rgba(255,255,255,.88)", borderBottom: `1px solid ${BO}` }}>
-    <div style={{ maxWidth: "460px", margin: "0 auto", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <div style={{ fontSize: "10px", fontWeight: 800, letterSpacing: "4px", color: TX }}>QUATTRO</div>
-      <StepIndicator active={activeStep} />
-      <div style={{ fontSize: "10px", color: GREEN, fontWeight: 600, letterSpacing: "1px" }}>PAIEMENT SÉCURISÉ</div>
-    </div>
-  </div>
-
-  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 16px 40px", position: "relative", zIndex: 1 }}>
-    <div style={{ width: "100%", maxWidth: "460px" }}>
-
-      <div style={{ background: BG, border: `1px solid ${BO}`, borderRadius: "16px", padding: "20px 18px", marginBottom: "16px" }}>
-        <p style={{ fontSize: "16px", color: TX, margin: "0 0 4px", fontWeight: 700 }}>Bonjour {data.name} 👋</p>
-        <p style={{ fontSize: "13px", color: TM, margin: "0 0 18px", lineHeight: "1.6" }}>Voici votre page de paiement personnalisée. Suivez les étapes ci-dessous pour finaliser votre commande.</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "14px" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: "5px", padding: "5px 10px", borderRadius: "20px", background: GL, fontSize: "11px", color: GD, fontWeight: 600 }}>
-            <span style={{ fontSize: "12px", animation: "pulseLock 2.5s ease infinite" }}>🔒</span> Paiement sécurisé
-          </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "5px", padding: "5px 10px", borderRadius: "20px", background: GL, fontSize: "11px", color: GD, fontWeight: 600 }}>
-            <span style={{ fontSize: "12px" }}>🏢</span>Entreprise européenne
-          </span>
-          <span style={{ display: "flex", alignItems: "center", gap: "5px", padding: "5px 10px", borderRadius: "20px", background: GL, fontSize: "11px", color: GD, fontWeight: 600 }}>
-            <span style={{ fontSize: "12px" }}>✓</span>+<Counter target={4000} /> clients
-          </span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 14px", background: GL, borderRadius: "10px" }}>
-            <span style={{ fontSize: "20px" }}>📦</span>
-            <div>
-              <div style={{ fontSize: "12px", color: GD, fontWeight: 600 }}>Livraison estimée</div>
-              <div style={{ fontSize: "14px", color: GREEN, fontWeight: 600, marginTop: "1px" }}>{getDelivery()}</div>
-              <div style={{ fontSize: "10.5px", color: TL, marginTop: "2px" }}>Suivi UPS/FedEx sous 48h après expédition</div>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "#FFFBF0", borderRadius: "10px", border: "1px solid #F0E6C8" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "14px" }}>⏳</span>
-              <span style={{ fontSize: "11.5px", color: "#8B7230", lineHeight: "1.4" }}>Réservé jusqu'au {getReserve()}</span>
-            </div>
-            <div style={{ fontFamily: "monospace", fontSize: "13px", fontWeight: 700, color: "#8B7230", background: "#F0E6C8", padding: "3px 8px", borderRadius: "6px", letterSpacing: "1px" }}>{countdown}</div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ textAlign: "center", margin: "12px 0 28px", animation: "fadeUp .8s cubic-bezier(.16,1,.3,1)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "14px", justifyContent: "center" }}>
-          <div style={{ height: "2px", flex: 1, background: `linear-gradient(90deg,transparent,${BO})` }} />
-          <div>
-            <div style={{ fontSize: "30px", fontWeight: 900, color: TX, fontFamily: FF, letterSpacing: "-1px" }}>6 étapes simples</div>
-            <div style={{ fontSize: "12px", color: TL, marginTop: "8px", letterSpacing: "2px", textTransform: "uppercase" }}>pour finaliser votre commande</div>
-          </div>
-          <div style={{ height: "2px", flex: 1, background: `linear-gradient(90deg,${BO},transparent)` }} />
-        </div>
-      </div>
-
-      <div style={{ position: "relative" }}>
-        <ProgressLine total={6} pct={pct} />
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
-          <StepCard n={1} icon="🏦" iconBg="#E3F1E8" title="Ouvrez votre application bancaire" id="s1" desc="Ouvrez l'app de votre banque et cherchez le bouton pour faire un virement SEPA.">
-            <AltNames names={["Virement", "Envoyer de l'argent", "Nouveau transfert"]} />
-            <Tip text="Le nom du bouton change selon la banque (BNP, Boursorama, N26, Revolut…)" />
-          </StepCard>
-
-          <StepCard n={2} icon="🔢" iconBg="#E6F0FA" title="Copiez et collez l'IBAN" id="s2" desc="C'est le numéro du compte vers lequel vous envoyez l'argent.">
-            <CopyRow label="IBAN" value="LU80 4080 0000 4547 7817" copyValue="LU80408000004547817" onCopied={() => { setCIban(true); scrollTo("s3"); }} />
-            <Tip icon="🇱🇺" text="Si votre banque demande un pays, sélectionnez Luxembourg — c'est là où le compte est domicilié." />
-          </StepCard>
-
-          <StepCard n={3} icon="👤" iconBg="#F3EDE4" title="Entrez le nom du destinataire" id="s3" desc="Ce champ peut s'appeler :">
-            <AltNames names={["Bénéficiaire", "Destinataire", "Nom du compte", "Titulaire"]} />
-            <CopyRow label="Nom à entrer" value="Quattro Visual Ltd" sublabel="Entreprise enregistrée au Royaume-Uni" onCopied={() => scrollTo("s4")} />
-          </StepCard>
-
-          <StepCard n={4} icon="💶" iconBg="#E8F0EB" title="Entrez le montant exact" id="s4" desc="Vérifiez bien que la devise est en euros (€).">
-            <CopyRow isSlot amount={data.amount} value={`${data.amount}€`} copyValue={String(data.amount)} large onCopied={() => { setCamt(true); scrollTo("s5"); }} />
-          </StepCard>
-
-          <StepCard n={5} icon="✏️" iconBg="#F0EDE6" title="En référence, mettez votre nom" id="s5" desc="Ce champ peut s'appeler :">
-            <AltNames names={["Référence", "Communication", "Motif", "Message"]} />
-            <CopyRow label="Référence" value={data.name} onCopied={() => { setCref(true); scrollTo("s6"); }} />
-            <Tip text="Si votre banque ne demande pas de référence, passez directement à l'étape suivante." />
-          </StepCard>
-
-          <AllReadyBanner show={allReady} />
-
-          <StepCard n={6} icon="✅" iconBg={GL} title="Confirmez et envoyez-nous la capture" id="s6" highlight desc="Appuyez sur Confirmer dans votre app, puis envoyez-nous la capture sur WhatsApp.">
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "11.5px", color: TM, marginBottom: "12px" }}>
-              <span style={{ fontSize: "15px" }}>📬</span>
-              <span>Votre commande sera préparée dès réception.</span>
-            </div>
-            <a href={waLink} onClick={handleWa} className="bp" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "#25D366", color: "#fff", borderRadius: "12px", padding: "14px", fontSize: "14px", fontWeight: 700, textDecoration: "none", fontFamily: FF }}>
-              <WaIcon /> Envoyer la capture sur WhatsApp
-            </a>
-          </StepCard>
-        </div>
-      </div>
-
-      <div style={{ marginTop: "18px", padding: "16px 18px", background: BG, border: `1px solid ${BO}`, borderRadius: "14px" }}>
-        <div style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "2px", color: TL, textTransform: "uppercase", marginBottom: "10px" }}>Compatible avec toutes les banques</div>
-        <BankLogos />
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "14px" }}>
-        <WhyAccordion />
-        <Reviews />
-        <div style={{ marginTop: "14px", padding: "18px", background: BG, border: `1px solid ${BO}`, borderRadius: "14px" }}>
-          <div style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "2px", color: TL, textTransform: "uppercase", marginBottom: "12px" }}>Nous suivre</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {[
-              { icon: "📸", p: "Instagram", h: "@quattro.shopping", url: "https://instagram.com/quattro.shopping" },
-              { icon: "🎵", p: "TikTok", h: "@quattroshopping", url: "https://tiktok.com/@quattroshopping" },
-            ].map(s => (
-              <a key={s.p} href={s.url} target="_blank" rel="noopener noreferrer" className="bp" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: BGS, borderRadius: "10px", textDecoration: "none" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
-                  <span style={{ fontSize: "16px" }}>{s.icon}</span>
-                  <span style={{ fontSize: "12px", color: TX, fontWeight: 600 }}>{s.p}</span>
-                </div>
-                <span style={{ fontSize: "11.5px", color: GREEN }}>{s.h}</span>
-              </a>
-            ))}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: BGS, borderRadius: "10px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
-                <span style={{ fontSize: "16px" }}>🌐</span>
-                <span style={{ fontSize: "12px", color: TX, fontWeight: 600 }}>Site</span>
-              </div>
-              <span style={{ fontSize: "11.5px", color: GREEN }}>quattroshopping.com</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ textAlign: "center", marginTop: "24px", paddingBottom: "16px" }}>
-        <div style={{ fontSize: "10px", fontWeight: 800, letterSpacing: "4px", color: TX, marginBottom: "4px" }}>QUATTRO</div>
-        <div style={{ fontSize: "11px", color: TL }}>depuis 2021 · Merci pour votre confiance</div>
-        <a href="https://quattroshopping.com" style={{ fontSize: "11px", color: GREEN, textDecoration: "none" }}>quattroshopping.com</a>
-      </div>
-    </div>
-  </div>
-
-  <a href={waLink} onClick={handleWa} className="bp" style={{ position: "fixed", bottom: "24px", right: "20px", zIndex: 50, width: "56px", height: "56px", borderRadius: "50%", background: "#25D366", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(37,211,102,.4)", textDecoration: "none", cursor: "pointer", animation: "floatBounce 3s ease-in-out infinite" }}>
-    <WaIconLg />
-  </a>
+<div style={{ position: “fixed”, top: 0, left: 0, width: “100%”, height: “3px”, zIndex: 100 }}>
+<div style={{ height: “100%”, width: `${pct}%`, background: `linear-gradient(90deg,${GREEN},#7EC8A0)`, transition: “width .1s linear”, borderRadius: “0 2px 2px 0” }} />
 </div>
-```
-
+<div style={{ position: “sticky”, top: “3px”, zIndex: 90, backdropFilter: “blur(20px)”, background: “rgba(255,255,255,.88)”, borderBottom: `1px solid ${BO}` }}>
+<div style={{ maxWidth: “460px”, margin: “0 auto”, padding: “12px 16px”, display: “flex”, alignItems: “center”, justifyContent: “space-between” }}>
+<div style={{ fontSize: “10px”, fontWeight: 800, letterSpacing: “4px”, color: TX }}>QUATTRO</div>
+<StepIndicator active={activeStep} />
+<div style={{ fontSize: “10px”, color: GREEN, fontWeight: 600, letterSpacing: “1px” }}>PAIEMENT SÉCURISÉ</div>
+</div>
+</div>
+<div style={{ display: “flex”, flexDirection: “column”, alignItems: “center”, padding: “20px 16px 40px”, position: “relative”, zIndex: 1 }}>
+<div style={{ width: “100%”, maxWidth: “460px” }}>
+<div style={{ background: BG, border: `1px solid ${BO}`, borderRadius: “16px”, padding: “20px 18px”, marginBottom: “16px” }}>
+<p style={{ fontSize: “16px”, color: TX, margin: “0 0 4px”, fontWeight: 700 }}>Bonjour {data.name} 👋</p>
+<p style={{ fontSize: “13px”, color: TM, margin: “0 0 18px”, lineHeight: “1.6” }}>Voici votre page de paiement personnalisée. Suivez les étapes ci-dessous pour finaliser votre commande.</p>
+<div style={{ display: “flex”, flexWrap: “wrap”, gap: “6px”, marginBottom: “14px” }}>
+<span style={{ display: “flex”, alignItems: “center”, gap: “5px”, padding: “5px 10px”, borderRadius: “20px”, background: GL, fontSize: “11px”, color: GD, fontWeight: 600 }}>
+<span style={{ fontSize: “12px”, animation: “pulseLock 2.5s ease infinite” }}>🔒</span> Paiement sécurisé
+</span>
+<span style={{ display: “flex”, alignItems: “center”, gap: “5px”, padding: “5px 10px”, borderRadius: “20px”, background: GL, fontSize: “11px”, color: GD, fontWeight: 600 }}>
+<span style={{ fontSize: “12px” }}>🏢</span>Entreprise européenne
+</span>
+<span style={{ display: “flex”, alignItems: “center”, gap: “5px”, padding: “5px 10px”, borderRadius: “20px”, background: GL, fontSize: “11px”, color: GD, fontWeight: 600 }}>
+<span style={{ fontSize: “12px” }}>✓</span>+<Counter target={4000} /> clients
+</span>
+</div>
+<div style={{ display: “flex”, flexDirection: “column”, gap: “8px” }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “10px”, padding: “12px 14px”, background: GL, borderRadius: “10px” }}>
+<span style={{ fontSize: “20px” }}>📦</span>
+<div>
+<div style={{ fontSize: “12px”, color: GD, fontWeight: 600 }}>Livraison estimée</div>
+<div style={{ fontSize: “14px”, color: GREEN, fontWeight: 600, marginTop: “1px” }}>{getDelivery()}</div>
+<div style={{ fontSize: “10.5px”, color: TL, marginTop: “2px” }}>Suivi UPS/FedEx sous 48h après expédition</div>
+</div>
+</div>
+<div style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between”, padding: “10px 14px”, background: “#FFFBF0”, borderRadius: “10px”, border: “1px solid #F0E6C8” }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “8px” }}>
+<span style={{ fontSize: “14px” }}>⏳</span>
+<span style={{ fontSize: “11.5px”, color: “#8B7230”, lineHeight: “1.4” }}>Réservé jusqu’au {getReserve()}</span>
+</div>
+<div style={{ fontFamily: “monospace”, fontSize: “13px”, fontWeight: 700, color: “#8B7230”, background: “#F0E6C8”, padding: “3px 8px”, borderRadius: “6px”, letterSpacing: “1px” }}>{countdown}</div>
+</div>
+</div>
+</div>
+<div style={{ textAlign: “center”, margin: “12px 0 28px”, animation: “fadeUp .8s cubic-bezier(.16,1,.3,1)” }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “14px”, justifyContent: “center” }}>
+<div style={{ height: “2px”, flex: 1, background: `linear-gradient(90deg,transparent,${BO})` }} />
+<div>
+<div style={{ fontSize: “30px”, fontWeight: 900, color: TX, fontFamily: FF, letterSpacing: “-1px” }}>6 étapes simples</div>
+<div style={{ fontSize: “12px”, color: TL, marginTop: “8px”, letterSpacing: “2px”, textTransform: “uppercase” }}>pour finaliser votre commande</div>
+</div>
+<div style={{ height: “2px”, flex: 1, background: `linear-gradient(90deg,${BO},transparent)` }} />
+</div>
+</div>
+<div style={{ position: “relative” }}>
+<ProgressLine total={6} pct={pct} />
+<div style={{ display: “flex”, flexDirection: “column”, gap: “16px” }}>
+<StepCard n={1} icon="🏦" iconBg="#E3F1E8" title="Ouvrez votre application bancaire" id="s1" desc="Ouvrez l'app de votre banque et cherchez le bouton pour faire un virement SEPA.">
+<AltNames names={[“Virement”, “Envoyer de l’argent”, “Nouveau transfert”]} />
+<Tip text="Le nom du bouton change selon la banque (BNP, Boursorama, N26, Revolut…)" />
+</StepCard>
+<StepCard n={2} icon="🔢" iconBg="#E6F0FA" title="Copiez et collez l'IBAN" id="s2" desc="C'est le numéro du compte vers lequel vous envoyez l'argent.">
+<CopyRow label=“IBAN” value=“LU80 4080 0000 4547 7817” copyValue=“LU80408000004547817” onCopied={() => { setCIban(true); scrollTo(“s3”); }} />
+<Tip icon="🇱🇺" text="Si votre banque demande un pays, sélectionnez Luxembourg — c'est là où le compte est domicilié." />
+</StepCard>
+<StepCard n={3} icon="👤" iconBg="#F3EDE4" title="Entrez le nom du destinataire" id="s3" desc="Ce champ peut s'appeler :">
+<AltNames names={[“Bénéficiaire”, “Destinataire”, “Nom du compte”, “Titulaire”]} />
+<CopyRow label=“Nom à entrer” value=“Quattro Visual Ltd” sublabel=“Entreprise enregistrée au Royaume-Uni” onCopied={() => scrollTo(“s4”)} />
+</StepCard>
+<StepCard n={4} icon="💶" iconBg="#E8F0EB" title="Entrez le montant exact" id="s4" desc="Vérifiez bien que la devise est en euros (€).">
+<CopyRow isSlot amount={data.amount} value={`${data.amount}€`} copyValue={String(data.amount)} large onCopied={() => { setCamt(true); scrollTo(“s5”); }} />
+</StepCard>
+<StepCard n={5} icon="✏️" iconBg="#F0EDE6" title="En référence, mettez votre nom" id="s5" desc="Ce champ peut s'appeler :">
+<AltNames names={[“Référence”, “Communication”, “Motif”, “Message”]} />
+<CopyRow label=“Référence” value={data.name} onCopied={() => { setCref(true); scrollTo(“s6”); }} />
+<Tip text="Si votre banque ne demande pas de référence, passez directement à l'étape suivante." />
+</StepCard>
+<AllReadyBanner show={allReady} />
+<StepCard n={6} icon="✅" iconBg={GL} title="Confirmez et envoyez-nous la capture" id="s6" highlight desc="Appuyez sur Confirmer dans votre app, puis envoyez-nous la capture sur WhatsApp.">
+<div style={{ display: “flex”, alignItems: “center”, gap: “8px”, fontSize: “11.5px”, color: TM, marginBottom: “12px” }}>
+<span style={{ fontSize: “15px” }}>📬</span>
+<span>Votre commande sera préparée dès réception.</span>
+</div>
+<a href={waLink} onClick={handleWa} className=“bp” style={{ display: “flex”, alignItems: “center”, justifyContent: “center”, gap: “8px”, background: “#25D366”, color: “#fff”, borderRadius: “12px”, padding: “14px”, fontSize: “14px”, fontWeight: 700, textDecoration: “none”, fontFamily: FF }}>
+<WaIcon /> Envoyer la capture sur WhatsApp
+</a>
+</StepCard>
+</div>
+</div>
+<div style={{ marginTop: “18px”, padding: “16px 18px”, background: BG, border: `1px solid ${BO}`, borderRadius: “14px” }}>
+<div style={{ fontSize: “10px”, fontWeight: 600, letterSpacing: “2px”, color: TL, textTransform: “uppercase”, marginBottom: “10px” }}>Compatible avec toutes les banques</div>
+<BankLogos />
+</div>
+<div style={{ display: “flex”, flexDirection: “column”, gap: “12px”, marginTop: “14px” }}>
+<WhyAccordion />
+<Reviews />
+<div style={{ marginTop: “14px”, padding: “18px”, background: BG, border: `1px solid ${BO}`, borderRadius: “14px” }}>
+<div style={{ fontSize: “10px”, fontWeight: 600, letterSpacing: “2px”, color: TL, textTransform: “uppercase”, marginBottom: “12px” }}>Nous suivre</div>
+<div style={{ display: “flex”, flexDirection: “column”, gap: “6px” }}>
+{[{ icon: “📸”, p: “Instagram”, h: “@quattro.shopping”, url: “https://instagram.com/quattro.shopping” }, { icon: “🎵”, p: “TikTok”, h: “@quattroshopping”, url: “https://tiktok.com/@quattroshopping” }].map(s => (
+<a key={s.p} href={s.url} target=”_blank” rel=“noopener noreferrer” className=“bp” style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between”, padding: “10px 12px”, background: BGS, borderRadius: “10px”, textDecoration: “none” }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “9px” }}><span style={{ fontSize: “16px” }}>{s.icon}</span><span style={{ fontSize: “12px”, color: TX, fontWeight: 600 }}>{s.p}</span></div>
+<span style={{ fontSize: “11.5px”, color: GREEN }}>{s.h}</span>
+</a>
+))}
+<div style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between”, padding: “10px 12px”, background: BGS, borderRadius: “10px” }}>
+<div style={{ display: “flex”, alignItems: “center”, gap: “9px” }}><span style={{ fontSize: “16px” }}>🌐</span><span style={{ fontSize: “12px”, color: TX, fontWeight: 600 }}>Site</span></div>
+<span style={{ fontSize: “11.5px”, color: GREEN }}>quattroshopping.com</span>
+</div>
+</div>
+</div>
+</div>
+<div style={{ textAlign: “center”, marginTop: “24px”, paddingBottom: “16px” }}>
+<div style={{ fontSize: “10px”, fontWeight: 800, letterSpacing: “4px”, color: TX, marginBottom: “4px” }}>QUATTRO</div>
+<div style={{ fontSize: “11px”, color: TL }}>depuis 2021 · Merci pour votre confiance</div>
+<a href=“https://quattroshopping.com” style={{ fontSize: “11px”, color: GREEN, textDecoration: “none” }}>quattroshopping.com</a>
+</div>
+</div>
+</div>
+<a href={waLink} onClick={handleWa} className=“bp” style={{ position: “fixed”, bottom: “24px”, right: “20px”, zIndex: 50, width: “56px”, height: “56px”, borderRadius: “50%”, background: “#25D366”, display: “flex”, alignItems: “center”, justifyContent: “center”, boxShadow: “0 4px 20px rgba(37,211,102,.4)”, textDecoration: “none”, cursor: “pointer”, animation: “floatBounce 3s ease-in-out infinite” }}>
+<WaIconLg />
+</a>
+</div>
 );
 }
 
 function AdminPanel() {
-const [name, setName] = useState(””);
-const [amount, setAmount] = useState(””);
-const [order, setOrder] = useState(””);
-const [link, setLink] = useState(””);
-const [preview, setPreview] = useState(null);
+const [name, setName] = useState(””), [amount, setAmount] = useState(””), [order, setOrder] = useState(””), [link, setLink] = useState(””), [preview, setPreview] = useState(null);
 const BASE = window.location.origin + window.location.pathname;
-
 const gen = () => {
 if (!name || !amount) return;
 const p = new URLSearchParams();
@@ -616,14 +579,12 @@ p.set(“name”, name); p.set(“amount”, amount);
 if (order) p.set(“order”, order);
 setLink(`${BASE}?${p.toString()}`);
 };
-
 if (preview) return (
 <div>
 <PaymentPage data={preview} />
 <button onClick={() => setPreview(null)} className=“bp” style={{ position: “fixed”, top: “60px”, left: “16px”, zIndex: 200, background: TX, color: “#fff”, border: “none”, borderRadius: “8px”, padding: “8px 14px”, fontSize: “12px”, cursor: “pointer”, fontFamily: FF }}>← Retour admin</button>
 </div>
 );
-
 return (
 <div style={{ minHeight: “100vh”, background: BGS, display: “flex”, flexDirection: “column”, alignItems: “center”, padding: “40px 16px”, fontFamily: FF }}>
 <div style={{ textAlign: “center”, marginBottom: “28px”, animation: “fadeUp .5s ease” }}>
@@ -631,17 +592,10 @@ return (
 <div style={{ fontSize: “12px”, color: GREEN, marginTop: “4px”, letterSpacing: “1px” }}>Génération de lien de paiement</div>
 </div>
 <div style={{ background: BG, borderRadius: “14px”, padding: “28px”, width: “100%”, maxWidth: “400px” }}>
-{[
-{ label: “Prénom et nom du client”, value: name, set: setName, ph: “Jean Dupont” },
-{ label: “Montant (€)”, value: amount, set: setAmount, ph: “178” },
-{ label: “N° commande (optionnel)”, value: order, set: setOrder, ph: “QS-4521” },
-].map(f => (
+{[{ label: “Prénom et nom du client”, value: name, set: setName, ph: “Jean Dupont” }, { label: “Montant (€)”, value: amount, set: setAmount, ph: “178” }, { label: “N° commande (optionnel)”, value: order, set: setOrder, ph: “QS-4521” }].map(f => (
 <div key={f.label} style={{ marginBottom: “16px” }}>
 <label style={{ display: “block”, fontSize: “10px”, fontWeight: 600, color: TM, letterSpacing: “1px”, textTransform: “uppercase”, marginBottom: “6px” }}>{f.label}</label>
-<input value={f.value} onChange={e => f.set(e.target.value)} placeholder={f.ph}
-style={{ width: “100%”, padding: “11px 14px”, background: BGS, border: `1px solid ${BO}`, borderRadius: “8px”, fontSize: “14px”, color: TX, outline: “none”, fontFamily: FF }}
-onFocus={e => e.target.style.borderColor = GREEN}
-onBlur={e => e.target.style.borderColor = BO} />
+<input value={f.value} onChange={e => f.set(e.target.value)} placeholder={f.ph} style={{ width: “100%”, padding: “11px 14px”, background: BGS, border: `1px solid ${BO}`, borderRadius: “8px”, fontSize: “14px”, color: TX, outline: “none”, fontFamily: FF }} onFocus={e => e.target.style.borderColor = GREEN} onBlur={e => e.target.style.borderColor = BO} />
 </div>
 ))}
 <div style={{ display: “flex”, gap: “8px”, marginTop: “8px” }}>
@@ -654,38 +608,18 @@ onBlur={e => e.target.style.borderColor = BO} />
 <div style={{ fontSize: “11.5px”, color: TX, wordBreak: “break-all”, background: BG, borderRadius: “6px”, padding: “8px 10px”, marginBottom: “10px”, fontFamily: “monospace” }}>{link}</div>
 <div style={{ display: “flex”, gap: “8px”, flexWrap: “wrap” }}>
 <CopyBtn text={link} label="Copier le lien" />
-<button onClick={() => {
-const t = `Bonjour ${name} !\n\nMerci pour votre commande Quattro Shopping.\n\nCliquez ici pour finaliser votre paiement :\n${link}\n\nN'hésitez pas à me contacter si besoin. 🙏`;
-window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, “_blank”);
-}} className=“bp” style={{ background: “#25D366”, color: “#fff”, border: “none”, borderRadius: “8px”, padding: “7px 14px”, fontSize: “11px”, fontWeight: 700, cursor: “pointer”, fontFamily: FF }}>
-Envoyer via WhatsApp
-</button>
+<button onClick={() => { const t = `Bonjour ${name} !\n\nMerci pour votre commande Quattro Shopping.\n\nCliquez ici pour finaliser votre paiement :\n${link}\n\nN'hésitez pas à me contacter si besoin. 🙏`; window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, “_blank”); }} className=“bp” style={{ background: “#25D366”, color: “#fff”, border: “none”, borderRadius: “8px”, padding: “7px 14px”, fontSize: “11px”, fontWeight: 700, cursor: “pointer”, fontFamily: FF }}>Envoyer via WhatsApp</button>
 </div>
 </div>
 )}
 </div>
-{link && (
-<div style={{ marginTop: “16px”, padding: “14px 20px”, background: BG, border: `1px solid ${BO}`, borderRadius: “12px”, maxWidth: “400px”, width: “100%” }}>
-<div style={{ fontSize: “11px”, color: TM, lineHeight: “1.7” }}>
-<strong style={{ color: TX }}>Comment ça marche :</strong><br />
-1. Le lien contient le nom et montant du client<br />
-2. Envoyez-le sur WhatsApp<br />
-3. Le client ouvre → voit sa page personnalisée<br />
-4. Il suit les étapes, paie, vous envoie la capture
-</div>
-</div>
-)}
 </div>
 );
 }
 
 function LoginScreen({ onLogin }) {
-const [pw, setPw] = useState(””);
-const [error, setError] = useState(false);
-const go = () => {
-if (pw === “eren”) onLogin();
-else { setError(true); setTimeout(() => setError(false), 1500); }
-};
+const [pw, setPw] = useState(””), [error, setError] = useState(false);
+const go = () => { if (pw === “eren”) onLogin(); else { setError(true); setTimeout(() => setError(false), 1500); } };
 return (
 <div style={{ minHeight: “100vh”, background: BGS, display: “flex”, flexDirection: “column”, alignItems: “center”, justifyContent: “center”, padding: “24px”, fontFamily: FF }}>
 <div style={{ textAlign: “center”, marginBottom: “28px”, animation: “fadeUp .5s ease” }}>
@@ -694,9 +628,7 @@ return (
 </div>
 <div style={{ background: BG, borderRadius: “14px”, padding: “28px”, width: “100%”, maxWidth: “340px” }}>
 <div style={{ fontSize: “10px”, fontWeight: 600, color: TM, letterSpacing: “1px”, textTransform: “uppercase”, marginBottom: “8px” }}>Mot de passe</div>
-<input type=“password” value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === “Enter” && go()}
-placeholder=”••••••” autoFocus
-style={{ width: “100%”, padding: “12px 14px”, background: BGS, border: `1px solid ${error ? "#E24B4A" : BO}`, borderRadius: “8px”, fontSize: “16px”, color: TX, outline: “none”, marginBottom: “12px”, fontFamily: FF, transition: “border-color .2s” }} />
+<input type=“password” value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === “Enter” && go()} placeholder=”••••••” autoFocus style={{ width: “100%”, padding: “12px 14px”, background: BGS, border: `1px solid ${error ? "#E24B4A" : BO}`, borderRadius: “8px”, fontSize: “16px”, color: TX, outline: “none”, marginBottom: “12px”, fontFamily: FF, transition: “border-color .2s” }} />
 {error && <div style={{ fontSize: “11px”, color: “#E24B4A”, marginBottom: “10px”, animation: “fadeR .3s ease” }}>Mot de passe incorrect</div>}
 <button onClick={go} className=“bp” style={{ width: “100%”, padding: “13px”, background: GREEN, color: “#fff”, border: “none”, borderRadius: “10px”, fontSize: “13px”, fontWeight: 700, cursor: “pointer”, fontFamily: FF }}>Accéder</button>
 </div>
@@ -707,9 +639,7 @@ style={{ width: “100%”, padding: “12px 14px”, background: BGS, border: `
 export default function App() {
 const [auth, setAuth] = useState(false);
 const p = new URLSearchParams(window.location.search);
-const name = p.get(“name”);
-const amount = p.get(“amount”);
-const order = p.get(“order”);
+const name = p.get(“name”), amount = p.get(“amount”), order = p.get(“order”);
 if (name && amount) return <PaymentPage data={{ name, amount, order: order || “” }} />;
 if (!auth) return <LoginScreen onLogin={() => setAuth(true)} />;
 return <AdminPanel />;
